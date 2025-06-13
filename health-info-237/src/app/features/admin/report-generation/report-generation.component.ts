@@ -120,42 +120,32 @@ export class ReportGenerationComponent implements OnInit {
   availableTemplates: ReportTemplate[] = [];
   areDatesValid: boolean = true;
 
-  private allTemplates: ReportTemplate[] = [
-    {
-      id: 'disease_summary',
-      name: 'Disease Summary Report',
-      description: 'Summary of disease cases by type and location',
-      type: 'disease',
-      format: 'pdf'
-    },
-    {
-      id: 'safety_compliance',
-      name: 'Safety Compliance Report',
-      description: 'Safety measures compliance by location',
-      type: 'safety',
-      format: 'excel'
-    },
-    {
-      id: 'user_activity',
-      name: 'User Activity Report',
-      description: 'User login and activity summary',
-      type: 'user',
-      format: 'csv'
-    },
-    {
-      id: 'system_health',
-      name: 'System Health Report',
-      description: 'System performance and usage metrics',
-      type: 'system',
-      format: 'pdf'
-    }
-  ];
+  private allTemplates: ReportTemplate[] = []; // Initialize as empty array
 
   constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private reportService: ReportService) {}
 
   ngOnInit() {
-    this.updateTemplates();
+    this.loadReportTemplates(); // Load templates on init
     this.validateDates();
+  }
+
+  async loadReportTemplates() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Loading report templates...',
+      spinner: 'dots'
+    });
+    await loading.present();
+
+    try {
+      const templates = await this.reportService.getReportTemplates().toPromise();
+      this.allTemplates = templates || [];
+      this.updateTemplates(); // Update available templates after loading
+    } catch (error) {
+      console.error('Error loading report templates:', error);
+      this.showToast('Failed to load report templates.', 'danger');
+    } finally {
+      loading.dismiss();
+    }
   }
 
   updateTemplates() {

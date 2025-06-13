@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ModalController, ToastController } from '@ionic/angular';
+import { IonicModule, ModalController, ToastController, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { ReportService } from '../../../../core/services/report.service';
 
 @Component({
   selector: 'app-custom-report-modal',
@@ -65,7 +66,7 @@ export class CustomReportModalComponent implements OnInit {
   filterCriteria: string = '';
   reportFormat: string = 'pdf';
 
-  constructor(private modalCtrl: ModalController, private toastCtrl: ToastController) { }
+  constructor(private modalCtrl: ModalController, private toastCtrl: ToastController, private loadingCtrl: LoadingController, private reportService: ReportService) { }
 
   ngOnInit() { }
 
@@ -74,22 +75,49 @@ export class CustomReportModalComponent implements OnInit {
   }
 
   async generateCustomReport() {
-    // TODO: Implement actual custom report generation logic (e.g., API call to backend)
-    console.log('Generating custom report with:', {
-      reportTitle: this.reportTitle,
-      selectedFields: this.selectedFields,
-      filterCriteria: this.filterCriteria,
-      reportFormat: this.reportFormat
+    const loading = await this.loadingCtrl.create({
+      message: 'Generating custom report...',
+      spinner: 'crescent'
     });
+    await loading.present();
 
-    const toast = await this.toastCtrl.create({
-      message: 'Custom report generation started (simulated).',
-      duration: 3000,
-      position: 'bottom',
-      color: 'success'
-    });
-    await toast.present();
+    try {
+      const response = await this.reportService.generateReport({
+        templateId: 'custom_report', // A generic ID for custom reports
+        startDate: new Date().toISOString(), // You might want to add date pickers to custom report modal
+        endDate: new Date().toISOString()    // or derive from filterCriteria
+      }).toPromise();
 
-    this.dismiss();
+      if (response && response.success) {
+        this.toastCtrl.create({
+          message: response.message,
+          duration: 3000,
+          position: 'bottom',
+          color: 'success'
+        }).then(toast => toast.present());
+
+        if (response.reportUrl) {
+          window.open(response.reportUrl, '_blank');
+        }
+        this.modalCtrl.dismiss(null, 'confirm'); // Dismiss with 'confirm' role
+      } else {
+        this.toastCtrl.create({
+          message: response?.message || 'Failed to generate custom report.',
+          duration: 3000,
+          position: 'bottom',
+          color: 'danger'
+        }).then(toast => toast.present());
+      }
+    } catch (error) {
+      console.error('Error generating custom report:', error);
+      this.toastCtrl.create({
+        message: 'Failed to generate custom report due to an error.',
+        duration: 3000,
+        position: 'bottom',
+        color: 'danger'
+      }).then(toast => toast.present());
+    } finally {
+      loading.dismiss();
+    }
   }
 } 
