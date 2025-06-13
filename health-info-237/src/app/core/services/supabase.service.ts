@@ -159,7 +159,7 @@ export class SupabaseService {
       // Get the current environment
       const isProduction = window.location.hostname !== 'localhost';
       const baseUrl = isProduction 
-        ? 'https://health-info-237.vercel.app' // Replace with your actual Vercel URL after deployment
+        ? 'https://health-info-237-a6pd.vercel.app'
         : 'http://localhost:8100';
 
       console.log('Using base URL for email confirmation:', baseUrl);
