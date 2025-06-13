@@ -1,0 +1,136 @@
+<ion-content>
+  <div class="home-dashboard">
+    <div class="page-header">
+      <h1>Health Dashboard</h1>
+      <p>Monitor and analyze disease cases in Cameroon</p>
+    </div>
+
+    <div class="region-selector">
+      <ion-item>
+        <ion-label>Select Region</ion-label>
+        <ion-select [(ngModel)]="selectedRegion" (ionChange)="onRegionChange()">
+          <ion-select-option *ngFor="let region of regions" [value]="region">
+            {{region}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <div class="disease-overview">
+      <div class="disease-section">
+        <h2>Malaria Overview</h2>
+        <div class="stats-grid">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Total Cases</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{malariaData.total | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Active Cases</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{malariaData.active | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Recovered Cases</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{malariaData.recovered | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Death Cases</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{malariaData.deaths | number}}</div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+
+      <div class="disease-section">
+        <h2>Diabetes Overview</h2>
+        <div class="stats-grid">
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Total Cases</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{diabetesData.total | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Type 1 Diabetes</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{diabetesData.type1 | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Type 2 Diabetes</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{diabetesData.type2 | number}}</div>
+            </ion-card-content>
+          </ion-card>
+
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Gestational Diabetes</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="stat-value">{{diabetesData.gestational | number}}</div>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visualizations Section -->
+    <div class="visualizations-section">
+      <!-- Case Trends Chart -->
+      <div class="visualization-card">
+        <h2>Disease Cases Over Time</h2>
+        <div class="chart-container">
+          <canvas #caseTrendsChart></canvas>
+        </div>
+      </div>
+
+      <!-- Geographic Distribution Map -->
+      <div class="visualization-card">
+        <h2>Geographic Distribution</h2>
+        <div class="map-container" #mapContainer></div>
+      </div>
+
+      <!-- Age Distribution Chart -->
+      <div class="visualization-card">
+        <h2>Age Distribution of Cases</h2>
+        <div class="chart-container">
+          <canvas #ageDistributionChart></canvas>
+        </div>
+      </div>
+
+      <!-- Diabetes Type Distribution Chart -->
+      <div class="visualization-card">
+        <h2>Diabetes Type Distribution</h2>
+        <div class="chart-container">
+          <canvas #typeDistributionChart></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content> 

@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="header">
+    <h1>Diabetes Data</h1>
+    <ion-select [(ngModel)]="selectedRegion" (ionChange)="onRegionChange()" interface="popover">
+      <ion-select-option *ngFor="let region of regions" [value]="region">{{region}}</ion-select-option>
+    </ion-select>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Loading diabetes data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <p>{{error}}</p>
+    <ion-button (click)="loadData()">Retry</ion-button>
+  </div>
+
+  <!-- Data Display -->
+  <div class="data-container" *ngIf="!loading && !error">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Cases</h3>
+        <p class="stat-value">{{stats.total | number}}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Type 1 Diabetes</h3>
+        <p class="stat-value">{{stats.type1 | number}}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Type 2 Diabetes</h3>
+        <p class="stat-value">{{stats.type2 | number}}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Gestational Diabetes</h3>
+        <p class="stat-value">{{stats.gestational | number}}</p>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <canvas id="diabetesChart"></canvas>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,28 @@
+ion-content {
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+ion-list {
+  margin-bottom: 16px;
+}
+
+ion-button {
+  margin-top: 16px;
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+ion-input, ion-select {
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.validation-error {
+  color: var(--ion-color-danger);
+  font-size: 12px;
+  margin: -12px 0 0 16px;
+} 

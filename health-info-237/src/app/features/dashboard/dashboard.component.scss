@@ -1,0 +1,156 @@
+.dashboard-shell {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background: var(--ion-color-light);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  position: relative;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--sidebar-background);
+  border-right: var(--sidebar-border);
+  box-shadow: var(--sidebar-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  flex-shrink: 0;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+
+  &.collapsed {
+    width: var(--sidebar-collapsed-width);
+    min-width: var(--sidebar-collapsed-width);
+    max-width: var(--sidebar-collapsed-width);
+  }
+
+  &.mobile-open {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 900px) {
+    transform: translateX(-100%);
+  }
+}
+
+.dashboard-main {
+  flex: 1 1 0;
+  min-width: 0;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: var(--sidebar-width);
+  width: 100%;
+
+  &.sidebar-collapsed {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+
+  @media (max-width: 900px) {
+    margin-left: 0;
+  }
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+
+  .header-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  ion-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 0;
+  }
+}
+
+ion-toolbar {
+  --background: rgba(46, 125, 50, 0.95);
+  --color: white;
+  --border-width: 0;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+.menu-toggle-btn {
+  --background: rgba(255, 255, 255, 0.2);
+  --background-hover: rgba(255, 255, 255, 0.3);
+  --background-activated: rgba(255, 255, 255, 0.4);
+  --border-radius: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  height: 40px;
+  margin: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .menu-icon {
+    font-size: 24px;
+  }
+
+  .menu-text {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 900px) {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    height: 44px;
+    margin: 0 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.notification-btn {
+  position: relative;
+  ion-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    --padding-start: 4px;
+    --padding-end: 4px;
+    font-size: 10px;
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: none;
+
+  @media (max-width: 900px) {
+    &.active {
+      display: block;
+    }
+  }
+} 

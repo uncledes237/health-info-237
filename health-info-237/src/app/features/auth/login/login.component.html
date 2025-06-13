@@ -1,0 +1,81 @@
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title class="ion-text-center">
+          <h1>Welcome to Health Dashboard 237</h1>
+        </ion-card-title>
+        <ion-card-subtitle class="ion-text-center">
+          <p>Your comprehensive health monitoring solution</p>
+        </ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Email</ion-label>
+            <ion-input 
+              type="email" 
+              formControlName="email" 
+              placeholder="Enter your email"
+              class="custom-input-field">
+            </ion-input>
+          </ion-item>
+          <div class="validation-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+            Email is required
+          </div>
+          <div class="validation-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+            Please enter a valid email
+          </div>
+
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Password</ion-label>
+            <ion-input 
+              [type]="showPassword ? 'text' : 'password'" 
+              formControlName="password" 
+              placeholder="Enter your password"
+              class="custom-input-field">
+            </ion-input>
+            <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
+              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+          <div class="validation-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+            Password is required
+          </div>
+
+          <div class="forgot-password">
+            <ion-button fill="clear" (click)="onForgotPassword()">
+              Forgot Password?
+            </ion-button>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            type="submit" 
+            [disabled]="!loginForm.valid || isLoading"
+            class="login-button">
+            <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+            <span *ngIf="!isLoading">Login</span>
+          </ion-button>
+
+          <div class="signup-link ion-text-center">
+            <p>Don't have an account? 
+              <ion-button fill="clear" (click)="onSignup()">
+                Sign up
+              </ion-button>
+            </p>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-button expand="block" (click)="createAdminUser()" [disabled]="isSubmitting">
+  Create Admin User
+</ion-button>
+
+<ion-button expand="block" (click)="tryAdminLogin()" [disabled]="isSubmitting" class="ion-margin-top">
+  Try Admin Login
+</ion-button> 

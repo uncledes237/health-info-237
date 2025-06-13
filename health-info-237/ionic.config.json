@@ -1,0 +1,7 @@
+{
+  "name": "health-info-237",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

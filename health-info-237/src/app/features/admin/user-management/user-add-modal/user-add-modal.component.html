@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="modalCtrl.dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Add New User</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="addUserForm" (ngSubmit)="createUser()">
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+      <ion-item>
+        <ion-input label="Full Name" type="text" formControlName="fullName" placeholder="Enter full name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Email" type="email" formControlName="email" placeholder="Enter email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Password" type="password" formControlName="password" placeholder="Enter password"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Role" formControlName="role" interface="popover">
+          <ion-select-option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Phone (Optional)" type="text" formControlName="phone" placeholder="Enter phone number"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input label="Location (Optional)" type="text" formControlName="location" placeholder="Enter location"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Status" formControlName="status" interface="popover">
+          <ion-select-option value="active">Active</ion-select-option>
+          <ion-select-option value="inactive">Inactive</ion-select-option>
+          <ion-select-option value="pending">Pending</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="!addUserForm.valid">
+      Create User
+    </ion-button>
+  </form>
+</ion-content> 

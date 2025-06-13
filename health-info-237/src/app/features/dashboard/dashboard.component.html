@@ -1,0 +1,45 @@
+<ion-app>
+  <div class="dashboard-shell">
+    <div *ngIf="isMobile && sidebarMobileOpen" class="sidebar-overlay" [class.active]="sidebarMobileOpen" (click)="closeMobileSidebar()"></div>
+    <app-sidebar
+      [collapsed]="sidebarCollapsed"
+      [menuItems]="menuItems"
+      [activeRoute]="activeRoute"
+      [user]="user"
+      (toggleSidebar)="toggleSidebar()"
+      class="sidebar"
+      [class.mobile-open]="sidebarMobileOpen"
+      [isMobile]="isMobile"
+      [isAdmin]="isAdmin()"
+    ></app-sidebar>
+
+    <div class="dashboard-main" [class.sidebar-collapsed]="sidebarCollapsed">
+      <ion-header class="ion-no-border header">
+        <ion-toolbar class="glass-effect">
+          <ion-buttons slot="start">
+            <ion-button class="menu-toggle-btn" (click)="toggleSidebar()">
+              <ion-icon name="menu-outline" class="menu-icon"></ion-icon>
+              <span class="menu-text" *ngIf="isMobile">Menu</span>
+            </ion-button>
+          </ion-buttons>
+          
+          <div class="header-title">
+            <img src="assets/logo.png" alt="Health Info 237 Logo" class="header-logo">
+            <ion-title class="ion-text-center">Health Info 237</ion-title>
+          </div>
+
+          <ion-buttons slot="end">
+            <ion-button class="notification-btn">
+              <ion-icon name="notifications-outline"></ion-icon>
+              <ion-badge color="danger" *ngIf="notificationCount > 0">{{notificationCount}}</ion-badge>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <router-outlet></router-outlet>
+      </ion-content>
+    </div>
+  </div>
+</ion-app> 

@@ -1,0 +1,39 @@
+<div class="sidebar-container" [class.collapsed]="collapsed" [class.mobile-open]="isMobile && !collapsed">
+  <!-- Logo Section -->
+  <div class="logo-section">
+    <img src="assets/logo.png" alt="Health Info 237" class="logo" [class.collapsed]="collapsed">
+    <button class="collapse-btn" (click)="onToggleSidebar()" *ngIf="!isMobile">
+      <ion-icon [name]="collapsed ? 'chevron-forward' : 'chevron-back'"></ion-icon>
+    </button>
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="nav-menu">
+    <div class="menu-section">
+      <div class="menu-item" 
+           *ngFor="let item of menuItems | filterAdmin:isAdmin"
+           [class.active]="activeRoute === item.route"
+           [routerLink]="item.route"
+           [routerLinkActive]="'active'"
+           (click)="isMobile && onToggleSidebar()">
+        <ion-icon [name]="item.icon"></ion-icon>
+        <span class="menu-label" *ngIf="!collapsed">{{item.label}}</span>
+        <ion-badge *ngIf="item.badge && !collapsed" color="danger">{{item.badge}}</ion-badge>
+        <ion-badge *ngIf="item.badge && collapsed" color="danger" class="collapsed-badge">{{item.badge}}</ion-badge>
+      </div>
+    </div>
+  </nav>
+
+  <!-- User Profile Section -->
+  <div class="profile-section" *ngIf="showProfile">
+    <div class="user-info" [class.collapsed]="collapsed">
+      <ion-avatar>
+        <img [src]="user?.avatar_url || 'assets/default-avatar.png'" alt="Profile">
+      </ion-avatar>
+      <div class="user-details" *ngIf="!collapsed">
+        <h3>{{user?.full_name || 'User'}}</h3>
+        <p>{{user?.role || 'Member'}}</p>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -1,0 +1,114 @@
+<ion-content>
+  <div class="infectious-disease-container">
+    <!-- Region Selector -->
+    <div class="region-selector">
+      <ion-item>
+        <ion-label>Select Region</ion-label>
+        <ion-select [(ngModel)]="selectedRegion" (ionChange)="onRegionChange()">
+          <ion-select-option *ngFor="let region of regions" [value]="region">
+            {{region}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <!-- Loading and Error States -->
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Loading malaria data...</p>
+    </div>
+
+    <div *ngIf="error" class="error-state">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{error}}</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-container" *ngIf="!loading && !error">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Total Cases</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h2>{{stats.total | number}}</h2>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Active Cases</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h2>{{stats.active | number}}</h2>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Recovered</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h2>{{stats.recovered | number}}</h2>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Deaths</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <h2>{{stats.deaths | number}}</h2>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Visualizations -->
+    <div class="visualizations-container" *ngIf="!loading && !error">
+      <!-- Cases Over Time Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>Cases Over Time</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #casesOverTimeChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Geographic Distribution Map -->
+      <ion-card class="map-card">
+        <ion-card-header>
+          <ion-card-title>Geographic Distribution</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="map-container" #mapContainer></div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Age Distribution Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>Age Distribution</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #ageDistributionChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Prevention Measures Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>Prevention Measures</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #preventionMeasuresChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content> 

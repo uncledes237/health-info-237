@@ -1,0 +1,165 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+
+// Ionic Variables and Theming. For more info, please see:
+// http://ionicframework.com/docs/theming/
+
+/** Ionic CSS Variables **/
+:root {
+  /** primary **/
+  --ion-color-primary: #2E7D32;
+  --ion-color-primary-rgb: 46, 125, 50;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #286e2c;
+  --ion-color-primary-tint: #438a47;
+
+  /** secondary **/
+  --ion-color-secondary: #4CAF50;
+  --ion-color-secondary-rgb: 76, 175, 80;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #439a46;
+  --ion-color-secondary-tint: #5eb762;
+
+  /** tertiary **/
+  --ion-color-tertiary: #81C784;
+  --ion-color-tertiary-rgb: 129, 199, 132;
+  --ion-color-tertiary-contrast: #000000;
+  --ion-color-tertiary-contrast-rgb: 0, 0, 0;
+  --ion-color-tertiary-shade: #72af75;
+  --ion-color-tertiary-tint: #8ecd91;
+
+  /** success **/
+  --ion-color-success: #388E3C;
+  --ion-color-success-rgb: 56, 142, 60;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #317d35;
+  --ion-color-success-tint: #4c9a4f;
+
+  /** warning **/
+  --ion-color-warning: #FFA000;
+  --ion-color-warning-rgb: 255, 160, 0;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e08d00;
+  --ion-color-warning-tint: #ffaa1a;
+
+  /** danger **/
+  --ion-color-danger: #D32F2F;
+  --ion-color-danger-rgb: 211, 47, 47;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #ba2929;
+  --ion-color-danger-tint: #d74444;
+
+  /** dark **/
+  --ion-color-dark: #1B5E20;
+  --ion-color-dark-rgb: 27, 94, 32;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #18531c;
+  --ion-color-dark-tint: #326e36;
+
+  /** medium **/
+  --ion-color-medium: #A5D6A7;
+  --ion-color-medium-rgb: 165, 214, 167;
+  --ion-color-medium-contrast: #000000;
+  --ion-color-medium-contrast-rgb: 0, 0, 0;
+  --ion-color-medium-shade: #91bc93;
+  --ion-color-medium-tint: #aedab0;
+
+  /** light **/
+  --ion-color-light: #E8F5E9;
+  --ion-color-light-rgb: 232, 245, 233;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #ccd8cd;
+  --ion-color-light-tint: #eaf6eb;
+
+  // Custom variables
+  --app-background: #F5F9F5;
+  --app-card-background: #ffffff;
+  --app-text-color: #1B5E20;
+  --app-text-color-light: #4CAF50;
+  --app-border-radius: 12px;
+  --app-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --app-transition: all 0.3s ease;
+}
+
+// Global styles
+ion-content {
+  --background: var(--app-background);
+}
+
+ion-card {
+  --background: var(--app-card-background);
+  border-radius: var(--app-border-radius);
+  box-shadow: var(--app-shadow);
+  margin: 16px;
+  transition: var(--app-transition);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+ion-button {
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+  font-weight: 600;
+  text-transform: none;
+  transition: var(--app-transition);
+
+  &:hover {
+    --box-shadow: 0 6px 12px rgba(46, 125, 50, 0.3);
+  }
+}
+
+ion-item {
+  --border-radius: 8px;
+  --background: var(--app-card-background);
+  margin: 8px 0;
+  transition: var(--app-transition);
+
+  &:hover {
+    --background: var(--ion-color-light);
+  }
+}
+
+ion-input, ion-textarea {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --background: var(--ion-color-light);
+  --border-radius: 8px;
+  --placeholder-color: var(--ion-color-medium);
+  --color: var(--app-text-color);
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  color: var(--app-text-color);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+p {
+  color: var(--app-text-color-light);
+  line-height: 1.6;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  ion-card {
+    margin: 8px;
+  }
+
+  ion-button {
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+}
