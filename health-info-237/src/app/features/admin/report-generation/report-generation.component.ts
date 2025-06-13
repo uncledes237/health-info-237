@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ToastController, LoadingController, ModalController } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../../core/services/report.service';
-import { CustomReportModalComponent } from './custom-report-modal/custom-report-modal.component';
 import { HttpClientModule } from '@angular/common/http';
 
 interface ReportTemplate {
   id: string;
   name: string;
   description: string;
-  type: 'disease' | 'safety' | 'user' | 'system';
+  type: 'disease' | 'user'; // Simplified types
   format: 'pdf' | 'excel' | 'csv';
 }
 
@@ -24,17 +23,15 @@ interface ReportTemplate {
             <ion-card>
               <ion-card-header>
                 <ion-card-title>Report Generation</ion-card-title>
-                <ion-card-subtitle>Generate and manage system reports</ion-card-subtitle>
+                <ion-card-subtitle>Generate and information about disease data and user data</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
                 <!-- Report Type Selection -->
                 <ion-item>
                   <ion-label>Report Type</ion-label>
                   <ion-select [(ngModel)]="selectedType" (ionChange)="updateTemplates()">
-                    <ion-select-option value="disease">Disease Reports</ion-select-option>
-                    <ion-select-option value="safety">Safety Measures</ion-select-option>
-                    <ion-select-option value="user">User Activity</ion-select-option>
-                    <ion-select-option value="system">System Reports</ion-select-option>
+                    <ion-select-option value="disease">Disease Data</ion-select-option>
+                    <ion-select-option value="user">User Data</ion-select-option>
                   </ion-select>
                 </ion-item>
 
@@ -87,14 +84,6 @@ interface ReportTemplate {
                 <ng-template #noTemplates>
                   <p class="ion-padding">No report templates available for the selected type.</p>
                 </ng-template>
-
-                <!-- Custom Report -->
-                <div class="ion-padding">
-                  <ion-button expand="block" (click)="createCustomReport()">
-                    <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-                    Create Custom Report
-                  </ion-button>
-                </div>
               </ion-card-content>
             </ion-card>
           </ion-col>
@@ -120,41 +109,35 @@ export class ReportGenerationComponent implements OnInit {
   selectedType: string = 'disease';
   startDate: string = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   endDate: string = new Date().toISOString();
-  maxDate: string = new Date().toISOString(); // Max date for end date picker
+  maxDate: string = new Date().toISOString();
   availableTemplates: ReportTemplate[] = [];
   areDatesValid: boolean = true;
 
-  private allTemplates: ReportTemplate[] = []; // Initialize as empty array
+  private allTemplates: ReportTemplate[] = [
+    {
+      id: 'disease_summary',
+      name: 'Disease Summary Report',
+      description: 'Summary of disease cases by type and location',
+      type: 'disease',
+      format: 'pdf'
+    },
+    {
+      id: 'user_activity',
+      name: 'User Activity Report',
+      description: 'Summary of user login and activity',
+      type: 'user',
+      format: 'csv'
+    }
+  ];
 
-  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private reportService: ReportService) {
+  constructor(private toastCtrl: ToastController, private reportService: ReportService) {
     console.log('ReportGenerationComponent: Constructor called');
   }
 
   ngOnInit() {
     console.log('ReportGenerationComponent: ngOnInit called');
-    this.loadReportTemplates(); // Load templates on init
+    this.updateTemplates();
     this.validateDates();
-  }
-
-  async loadReportTemplates() {
-    console.log('ReportGenerationComponent: Attempting to load report templates...');
-    const loading = await this.loadingCtrl.create({
-      message: 'Loading report templates...',
-      spinner: 'dots'
-    });
-    await loading.present();
-
-    try {
-      const templates = await this.reportService.getReportTemplates().toPromise();
-      this.allTemplates = templates || [];
-      console.log('ReportGenerationComponent: Templates loaded:', this.allTemplates);
-      this.updateTemplates(); // Update available templates after loading
-    } catch (error) {
-      console.error('ReportGenerationComponent: Error loading report templates:', error);
-      this.showToast('Failed to load report templates.', 'danger');
-    } finally {
-      loading.dismiss();
-    }
   }
 
   updateTemplates() {
@@ -179,23 +162,19 @@ export class ReportGenerationComponent implements OnInit {
       return;
     }
 
-    const loading = await this.loadingCtrl.create({
-      message: 'Generating report...',
-      spinner: 'crescent'
-    });
-    await loading.present();
+    // Simplified loading indicator (using toast only)
+    this.showToast('Generating report...', 'primary');
 
     try {
       const response = await this.reportService.generateReport({
         templateId: template.id,
         startDate: this.startDate,
         endDate: this.endDate
-      }).toPromise(); // Convert Observable to Promise
+      }).toPromise();
 
       if (response && response.success) {
         this.showToast(response.message, 'success');
         if (response.reportUrl) {
-          // In a real app, you might trigger a download or open in a new tab
           window.open(response.reportUrl, '_blank');
         }
       } else {
@@ -204,24 +183,6 @@ export class ReportGenerationComponent implements OnInit {
     } catch (error) {
       console.error('Error generating report:', error);
       this.showToast('Failed to generate report due to an error.', 'danger');
-    } finally {
-      loading.dismiss();
-    }
-  }
-
-  async createCustomReport() {
-    const modal = await this.modalCtrl.create({
-      component: CustomReportModalComponent,
-      componentProps: {
-        // You can pass initial data to the modal if needed
-      }
-    });
-    await modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-    if (role === 'confirm' && data) {
-      // Handle data returned from the custom report modal if needed
-      this.showToast('Custom report process finished.', 'success');
     }
   }
 
