@@ -5,7 +5,7 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "installCommand": "npm run vercel-install",
+        "installCommand": "npm install --legacy-peer-deps",
         "buildCommand": "npm run build",
         "outputDirectory": "www",
         "nodeVersion": "18.x"
