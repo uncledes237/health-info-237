@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
-    "vercel-build": "npm install --legacy-peer-deps && npm run build",
+    "vercel-build": "npm install --legacy-peer-deps && npm run build && ls -la www",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
