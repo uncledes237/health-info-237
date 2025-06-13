@@ -16,7 +16,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "www",
             "index": "src/index.html",
@@ -30,6 +30,11 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "assets"
               }
             ],
             "styles": [
@@ -39,7 +44,7 @@
               "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [],
-            "browser": "src/main.ts"
+            "aot": true
           },
           "configurations": {
             "production": {
@@ -111,6 +116,11 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "assets/images"
               }
             ],
             "styles": [

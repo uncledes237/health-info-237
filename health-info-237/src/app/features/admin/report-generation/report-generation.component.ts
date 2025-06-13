@@ -71,7 +71,7 @@ interface ReportTemplate {
                 </ion-item>
 
                 <!-- Report Templates -->
-                <ion-list>
+                <ion-list *ngIf="availableTemplates.length > 0; else noTemplates">
                   <ion-item *ngFor="let template of availableTemplates">
                     <ion-label>
                       <h2>{{ template.name }}</h2>
@@ -83,6 +83,9 @@ interface ReportTemplate {
                     </ion-button>
                   </ion-item>
                 </ion-list>
+                <ng-template #noTemplates>
+                  <p class="ion-padding">No report templates available for the selected type.</p>
+                </ng-template>
 
                 <!-- Custom Report -->
                 <div class="ion-padding">
@@ -122,14 +125,18 @@ export class ReportGenerationComponent implements OnInit {
 
   private allTemplates: ReportTemplate[] = []; // Initialize as empty array
 
-  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private reportService: ReportService) {}
+  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private reportService: ReportService) {
+    console.log('ReportGenerationComponent: Constructor called');
+  }
 
   ngOnInit() {
+    console.log('ReportGenerationComponent: ngOnInit called');
     this.loadReportTemplates(); // Load templates on init
     this.validateDates();
   }
 
   async loadReportTemplates() {
+    console.log('ReportGenerationComponent: Attempting to load report templates...');
     const loading = await this.loadingCtrl.create({
       message: 'Loading report templates...',
       spinner: 'dots'
@@ -139,9 +146,10 @@ export class ReportGenerationComponent implements OnInit {
     try {
       const templates = await this.reportService.getReportTemplates().toPromise();
       this.allTemplates = templates || [];
+      console.log('ReportGenerationComponent: Templates loaded:', this.allTemplates);
       this.updateTemplates(); // Update available templates after loading
     } catch (error) {
-      console.error('Error loading report templates:', error);
+      console.error('ReportGenerationComponent: Error loading report templates:', error);
       this.showToast('Failed to load report templates.', 'danger');
     } finally {
       loading.dismiss();
@@ -152,6 +160,7 @@ export class ReportGenerationComponent implements OnInit {
     this.availableTemplates = this.allTemplates.filter(
       template => template.type === this.selectedType
     );
+    console.log('ReportGenerationComponent: Available templates updated:', this.availableTemplates);
   }
 
   validateDates() {
