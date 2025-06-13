@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { AuthService, UserProfile } from '../../core/services/auth.service';
+import { NotificationService, Notification } from '../../core/services/notification.service';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { ProfileModalComponent } from '../../shared/profile-modal/profile-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,14 +32,15 @@ export class DashboardComponent implements OnInit {
   sidebarMobileOpen = false;
   isMobile = false;
   activeRoute = '';
-  notificationCount = 3;
+  notificationCount = 0;
+  notifications: Notification[] = [];
   menuItems = [
     { label: 'Home', icon: 'home-outline', route: '/dashboard/home' },
     { label: 'Infectious Disease', icon: 'bug-outline', route: '/dashboard/infectious-disease' },
     { label: 'Chronic Disease', icon: 'heart-outline', route: '/dashboard/chronic-disease' },
     { label: 'Safety Measures', icon: 'shield-checkmark-outline', route: '/dashboard/safety-measures' },
     { label: 'Report A Case', icon: 'alert-circle-outline', route: '/dashboard/report-case' },
-    { label: 'Notifications', icon: 'notifications-outline', route: '/dashboard/notifications', badge: 3 },
+    { label: 'Notifications', icon: 'notifications-outline', route: '/dashboard/notifications', badge: 0 },
     { label: 'User Management', icon: 'people-outline', route: '/dashboard/admin/user-management', adminOnly: true },
     { label: 'Logout', icon: 'log-out-outline', route: '/logout' }
   ];
@@ -45,17 +48,37 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
     this.activeRoute = this.router.url;
     this.updateSidebarMode();
+    
+    // Subscribe to user updates
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.user = user;
       }
     });
+
+    // Subscribe to notification updates
+    this.notificationService.getUnreadCount().subscribe(count => {
+      this.notificationCount = count;
+      this.updateMenuBadge();
+    });
+
+    this.notificationService.getNotifications().subscribe(notifications => {
+      this.notifications = notifications;
+    });
+  }
+
+  private updateMenuBadge() {
+    const notificationsItem = this.menuItems.find(item => item.label === 'Notifications');
+    if (notificationsItem) {
+      notificationsItem.badge = this.notificationCount;
+    }
   }
 
   @HostListener('window:resize')
@@ -85,10 +108,14 @@ export class DashboardComponent implements OnInit {
 
   async openProfile() {
     const modal = await this.modalCtrl.create({
-      component: 'ProfileModalComponent',
+      component: ProfileModalComponent,
       componentProps: { user: this.user }
     });
     await modal.present();
+  }
+
+  async openNotifications() {
+    await this.router.navigate(['/dashboard/notifications']);
   }
 
   async logout() {

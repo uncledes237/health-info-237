@@ -29,9 +29,14 @@
           </div>
 
           <ion-buttons slot="end">
-            <ion-button class="notification-btn">
+            <ion-button class="notification-btn" (click)="openNotifications()">
               <ion-icon name="notifications-outline"></ion-icon>
               <ion-badge color="danger" *ngIf="notificationCount > 0">{{notificationCount}}</ion-badge>
+            </ion-button>
+            <ion-button class="profile-btn" (click)="openProfile()">
+              <ion-avatar class="header-avatar">
+                <img [src]="user.avatar_url" [alt]="user.full_name">
+              </ion-avatar>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>

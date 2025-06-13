@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
+import { IonicModule, ToastController, LoadingController, ModalController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../../core/services/report.service';
+import { CustomReportModalComponent } from './custom-report-modal/custom-report-modal.component';
 
 interface ReportTemplate {
   id: string;
@@ -150,7 +151,7 @@ export class ReportGenerationComponent implements OnInit {
     }
   ];
 
-  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private reportService: ReportService) {}
+  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private modalCtrl: ModalController, private reportService: ReportService) {}
 
   ngOnInit() {
     this.updateTemplates();
@@ -209,7 +210,19 @@ export class ReportGenerationComponent implements OnInit {
   }
 
   async createCustomReport() {
-    this.showToast('Custom report creation not implemented yet', 'warning');
+    const modal = await this.modalCtrl.create({
+      component: CustomReportModalComponent,
+      componentProps: {
+        // You can pass initial data to the modal if needed
+      }
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data) {
+      // Handle data returned from the custom report modal if needed
+      this.showToast('Custom report process finished.', 'success');
+    }
   }
 
   private async showToast(message: string, color: string = 'primary') {

@@ -1,6 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { GlobalErrorHandler } from './core/handlers/global-error.handler';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -13,7 +13,8 @@ import { RouterModule } from '@angular/router';
     IonicModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([]),
+    HttpClientModule
   ],
   providers: [
     {
