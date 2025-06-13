@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { IonicModule, ToastController, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { ReportService } from '../../../core/services/report.service';
 
 interface ReportTemplate {
   id: string;
@@ -46,7 +47,8 @@ interface ReportTemplate {
                         [(ngModel)]="startDate"
                         presentation="date"
                         [showDefaultButtons]="true"
-                        (ionChange)="updateTemplates()">
+                        [max]="endDate"
+                        (ionChange)="validateDates()">
                       </ion-datetime>
                     </ng-template>
                   </ion-modal>
@@ -59,7 +61,9 @@ interface ReportTemplate {
                         [(ngModel)]="endDate"
                         presentation="date"
                         [showDefaultButtons]="true"
-                        (ionChange)="updateTemplates()">
+                        [min]="startDate"
+                        [max]="maxDate"
+                        (ionChange)="validateDates()">
                       </ion-datetime>
                     </ng-template>
                   </ion-modal>
@@ -72,7 +76,7 @@ interface ReportTemplate {
                       <h2>{{ template.name }}</h2>
                       <p>{{ template.description }}</p>
                     </ion-label>
-                    <ion-button fill="clear" slot="end" (click)="generateReport(template)">
+                    <ion-button fill="clear" slot="end" (click)="generateReport(template)" [disabled]="!areDatesValid">
                       <ion-icon name="download-outline" slot="start"></ion-icon>
                       Generate
                     </ion-button>
@@ -111,7 +115,9 @@ export class ReportGenerationComponent implements OnInit {
   selectedType: string = 'disease';
   startDate: string = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   endDate: string = new Date().toISOString();
+  maxDate: string = new Date().toISOString(); // Max date for end date picker
   availableTemplates: ReportTemplate[] = [];
+  areDatesValid: boolean = true;
 
   private allTemplates: ReportTemplate[] = [
     {
@@ -144,10 +150,11 @@ export class ReportGenerationComponent implements OnInit {
     }
   ];
 
-  constructor(private toastCtrl: ToastController) {}
+  constructor(private toastCtrl: ToastController, private loadingCtrl: LoadingController, private reportService: ReportService) {}
 
   ngOnInit() {
     this.updateTemplates();
+    this.validateDates();
   }
 
   updateTemplates() {
@@ -156,32 +163,61 @@ export class ReportGenerationComponent implements OnInit {
     );
   }
 
+  validateDates() {
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+    this.areDatesValid = start <= end;
+    if (!this.areDatesValid) {
+      this.showToast('End date cannot be before start date.', 'danger');
+    }
+  }
+
   async generateReport(template: ReportTemplate) {
+    if (!this.areDatesValid) {
+      this.showToast('Please select a valid date range first.', 'danger');
+      return;
+    }
+
+    const loading = await this.loadingCtrl.create({
+      message: 'Generating report...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
     try {
-      // TODO: Implement report generation logic
-      console.log('Generating report:', {
-        template,
+      const response = await this.reportService.generateReport({
+        templateId: template.id,
         startDate: this.startDate,
         endDate: this.endDate
-      });
-      
-      this.showToast('Report generation started');
+      }).toPromise(); // Convert Observable to Promise
+
+      if (response && response.success) {
+        this.showToast(response.message, 'success');
+        if (response.reportUrl) {
+          // In a real app, you might trigger a download or open in a new tab
+          window.open(response.reportUrl, '_blank');
+        }
+      } else {
+        this.showToast(response?.message || 'Failed to generate report.', 'danger');
+      }
     } catch (error) {
       console.error('Error generating report:', error);
-      this.showToast('Failed to generate report');
+      this.showToast('Failed to generate report due to an error.', 'danger');
+    } finally {
+      loading.dismiss();
     }
   }
 
   async createCustomReport() {
-    // TODO: Implement custom report creation
-    this.showToast('Custom report creation not implemented yet');
+    this.showToast('Custom report creation not implemented yet', 'warning');
   }
 
-  private async showToast(message: string) {
+  private async showToast(message: string, color: string = 'primary') {
     const toast = await this.toastCtrl.create({
       message,
       duration: 3000,
-      position: 'bottom'
+      position: 'bottom',
+      color: color
     });
     await toast.present();
   }
