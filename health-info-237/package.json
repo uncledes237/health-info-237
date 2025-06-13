@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production",
+    "build": "ng build --configuration production --output-path=dist/health-info-237",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"

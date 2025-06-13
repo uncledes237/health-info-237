@@ -1,6 +1,6 @@
 [build]
   base = "health-info-237"
-  command = "npm install --legacy-peer-deps && ng build --configuration production"
+  command = "chmod +x build.sh && ./build.sh"
   publish = "www"
 
 [build.environment]
