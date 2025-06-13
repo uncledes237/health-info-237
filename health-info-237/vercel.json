@@ -5,7 +5,7 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "npm ci && ionic build --prod",
+        "buildCommand": "npm install --force && ionic build --prod",
         "outputDirectory": "www"
       }
     }
