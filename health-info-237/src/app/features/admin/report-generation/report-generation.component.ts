@@ -4,6 +4,7 @@ import { IonicModule, ToastController, LoadingController, ModalController } from
 import { FormsModule } from '@angular/forms';
 import { ReportService } from '../../../core/services/report.service';
 import { CustomReportModalComponent } from './custom-report-modal/custom-report-modal.component';
+import { HttpClientModule } from '@angular/common/http';
 
 interface ReportTemplate {
   id: string;
@@ -113,7 +114,7 @@ interface ReportTemplate {
     }
   `],
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule]
+  imports: [CommonModule, IonicModule, FormsModule, HttpClientModule]
 })
 export class ReportGenerationComponent implements OnInit {
   selectedType: string = 'disease';
