@@ -1,3 +1,9 @@
+declare const process: {
+  env: {
+    [key: string]: string | undefined;
+  };
+};
+
 export const environment = {
   production: true,
   supabase: {
