@@ -5,8 +5,9 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "chmod +x build.sh && ./build.sh",
-        "outputDirectory": "www"
+        "buildCommand": "npm install --legacy-peer-deps && npm run build",
+        "outputDirectory": "www",
+        "nodeVersion": "18.x"
       }
     }
   ],
