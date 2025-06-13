@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "buildCommand": "npm run vercel-build",
-        "outputDirectory": "www",
+        "outputDirectory": "dist",
         "nodeVersion": "18.x"
       }
     }
