@@ -5,7 +5,8 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist/health-info-237"
+        "distDir": "dist/health-info-237",
+        "buildCommand": "npm run vercel-build"
       }
     }
   ],
