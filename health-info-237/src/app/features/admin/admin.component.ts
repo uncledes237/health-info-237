@@ -240,6 +240,7 @@ export class AdminComponent implements OnInit {
     private supabaseService: SupabaseService,
     private toastCtrl: ToastController
   ) {
+    console.log('AdminComponent: Constructor called');
     this.activeRoute = this.router.url;
     this.updateSidebarMode();
   }
@@ -269,7 +270,8 @@ export class AdminComponent implements OnInit {
     this.sidebarMobileOpen = false;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    console.log('AdminComponent: ngOnInit called');
     this.loadUserProfile();
     this.loadNotifications();
     this.setupNotificationSubscription();

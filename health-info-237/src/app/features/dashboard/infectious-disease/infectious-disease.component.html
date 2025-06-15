@@ -30,7 +30,7 @@
           <ion-card-title>Total Cases</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <h2>{{stats.total | number}}</h2>
+          <h2>{{totalCases | number}}</h2>
         </ion-card-content>
       </ion-card>
 
@@ -39,16 +39,7 @@
           <ion-card-title>Active Cases</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <h2>{{stats.active | number}}</h2>
-        </ion-card-content>
-      </ion-card>
-
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Recovered</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <h2>{{stats.recovered | number}}</h2>
+          <h2>{{activeCases | number}}</h2>
         </ion-card-content>
       </ion-card>
 
@@ -72,6 +63,42 @@
         <ion-card-content>
           <div class="chart-container">
             <canvas #casesOverTimeChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Annual Parasite Index Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>Annual Parasite Index (API)</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #apiChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- P. falciparum Rate Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>P. falciparum Rate</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #pfRateChart></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Testing and Treatment Chart -->
+      <ion-card class="chart-card">
+        <ion-card-header>
+          <ion-card-title>Testing and Treatment Overview</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="chart-container">
+            <canvas #treatmentChart></canvas>
           </div>
         </ion-card-content>
       </ion-card>

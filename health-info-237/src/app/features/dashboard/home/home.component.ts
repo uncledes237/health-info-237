@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { DiseaseDataService } from '../../../core/services/disease-data.service';
 import { DiseaseData } from '../../../core/models/disease-data.model';
+import { MalariaSurveillanceData } from '../../../core/models/malaria-surveillance-data.model'; // Import the new interface
 import { firstValueFrom } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 
@@ -45,8 +46,8 @@ import { MatOptionModule } from '@angular/material/core';
             <mat-card-title>Malaria</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="stat-value">{{malariaData.total_cases | number}}</div>
-            <div class="stat-label">Total Cases</div>
+            <div class="stat-value">{{totalAnnualMalariaCases | number}}</div>
+            <div class="stat-label">Total Cases (Annual Aggregated)</div>
           </mat-card-content>
         </mat-card>
 
@@ -223,46 +224,49 @@ export class HomeComponent implements OnInit {
   selectedRegion = 'all';
   regions = ['North', 'South', 'East', 'West', 'Central', 'Far North', 'Adamawa', 'Littoral', 'Northwest', 'Southwest'];
 
-  malariaData: Partial<DiseaseData> = {
-    total_cases: 0,
+  malariaData: MalariaSurveillanceData = {
+    id: '',
+    region: '',
+    date: new Date(),
+    confirmed_cases: 0,
+    deaths: 0, // Deaths is used in the service getMalariaStats() call.
+    created_at: new Date(),
+    updated_at: new Date()
   };
-
   diabetesData: Partial<DiseaseData> = {
     total_cases: 0,
+    active_cases: 0,
+    recovered_cases: 0,
+    type1: 0,
+    type2: 0,
+    gestational: 0
   };
+
+  totalAnnualMalariaCases: number = 0; // New property for aggregated annual cases
 
   constructor(private diseaseDataService: DiseaseDataService) {}
 
   async ngOnInit() {
-    console.log('HomeComponent: ngOnInit called.');
     await this.loadData();
   }
 
   onRegionChange() {
-    console.log('HomeComponent: Region changed to:', this.selectedRegion);
-    this.diseaseDataService.updateSelectedRegion(this.selectedRegion);
-    this.loadData();
+    // No specific region change logic for home component overview stats
+    // as they are global/aggregated. The detailed views handle region filtering.
   }
 
   private async loadData() {
-    console.log('HomeComponent: Starting loadData...');
     try {
-      const malariaStats = await firstValueFrom(this.diseaseDataService.getMalariaStats());
-      this.malariaData = malariaStats;
-      console.log('HomeComponent: Malaria stats loaded:', this.malariaData);
-
-      const diabetesStats = await firstValueFrom(this.diseaseDataService.getDiabetesStats());
-      this.diabetesData = diabetesStats;
-      console.log('HomeComponent: Diabetes stats loaded:', this.diabetesData);
-
-      console.log('HomeComponent: Data loaded.');
+      // Fetch the latest single malaria data record (for other dashboard components if needed)
+      this.malariaData = await firstValueFrom(this.diseaseDataService.getMalariaStats());
+      // Fetch annual aggregated malaria cases for the home card
+      this.totalAnnualMalariaCases = await firstValueFrom(this.diseaseDataService.getAggregatedAnnualMalariaCases());
+      this.diabetesData = await firstValueFrom(this.diseaseDataService.getDiabetesStats());
     } catch (error) {
-      console.error('HomeComponent: Error loading data:', error);
-      // Handle error display on UI if needed
-      this.malariaData.total_cases = 0; // Fallback to 0 on error
-      this.diabetesData.total_cases = 0; // Fallback to 0 on error
+      console.error('Error loading home dashboard data:', error);
     }
   }
+}
 
   // getCoordinatesForLocation is no longer needed in home.component as map is removed
   // private getCoordinatesForLocation(location: string): [number, number] | null {
@@ -280,4 +284,3 @@ export class HomeComponent implements OnInit {
   //   };
   //   return coords[location] || null;
   // }
-}

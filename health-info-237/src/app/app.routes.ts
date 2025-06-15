@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard, AdminGuard, HealthOfficialGuard } from './core/guards/auth.guard';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
-import { SignupComponent } from './features/auth/signup/signup.component';
 import { ReportCaseComponent } from './features/dashboard/report-case/report-case.component';
 
 export const routes: Routes = [
@@ -13,10 +12,6 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
-  },
-  {
-    path: 'signup',
-    loadComponent: () => import('./features/auth/signup/signup.component').then(m => m.SignupComponent)
   },
   {
     path: 'dashboard',
@@ -62,7 +57,6 @@ export const routes: Routes = [
   {
     path: 'admin',
     loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent),
-    // Temporarily removed AdminGuard for development
     // canActivate: [AdminGuard],
     children: [
       {
@@ -103,10 +97,6 @@ export const routes: Routes = [
   {
     path: 'auth/reset-password',
     component: ResetPasswordComponent
-  },
-  {
-    path: 'auth/signup',
-    component: SignupComponent
   },
   {
     path: '**',

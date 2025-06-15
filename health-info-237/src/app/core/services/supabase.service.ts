@@ -43,34 +43,64 @@ export type DiseaseType = 'malaria' | 'diabetes' | 'hypertension';
 class CustomStorage {
   private storage: Storage;
   private prefix: string;
+  private maxRetries: number = 3;
+  private baseDelay: number = 100;
 
   constructor(storage: Storage, prefix: string) {
     this.storage = storage;
     this.prefix = prefix;
   }
 
+  private withRetry<T>(operation: () => T): T {
+    let lastError: any;
+    for (let i = 0; i < this.maxRetries; i++) {
+      try {
+        return operation();
+      } catch (error: any) {
+        lastError = error;
+        if (error.name === 'NavigatorLockAcquireTimeoutError') {
+          // Simple delay without async/await
+          const start = Date.now();
+          while (Date.now() - start < this.baseDelay * Math.pow(2, i)) {
+            // Busy wait
+          }
+          continue;
+        }
+        // For other errors, throw immediately
+        throw error;
+      }
+    }
+    throw lastError;
+  }
+
   getItem(key: string): string | null {
     try {
-      return this.storage.getItem(`${this.prefix}${key}`);
+      return this.withRetry(() => 
+        this.storage.getItem(`${this.prefix}${key}`)
+      );
     } catch (error) {
-      console.error('Error reading from storage:', error);
+      console.warn('Error reading from storage:', error);
       return null;
     }
   }
 
   setItem(key: string, value: string): void {
     try {
-      this.storage.setItem(`${this.prefix}${key}`, value);
+      this.withRetry(() => 
+        this.storage.setItem(`${this.prefix}${key}`, value)
+      );
     } catch (error) {
-      console.error('Error writing to storage:', error);
+      console.warn('Error writing to storage:', error);
     }
   }
 
   removeItem(key: string): void {
     try {
-      this.storage.removeItem(`${this.prefix}${key}`);
+      this.withRetry(() => 
+        this.storage.removeItem(`${this.prefix}${key}`)
+      );
     } catch (error) {
-      console.error('Error removing from storage:', error);
+      console.warn('Error removing from storage:', error);
     }
   }
 }
@@ -117,7 +147,7 @@ export class SupabaseService {
     });
   }
 
-  get client(): SupabaseClient {
+  public get client(): SupabaseClient {
     return this.supabase;
   }
 

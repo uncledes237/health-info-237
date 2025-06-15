@@ -5,12 +5,12 @@
       [collapsed]="sidebarCollapsed"
       [menuItems]="menuItems"
       [activeRoute]="activeRoute"
-      [user]="user"
       (toggleSidebar)="toggleSidebar()"
       class="sidebar"
       [class.mobile-open]="sidebarMobileOpen"
       [isMobile]="isMobile"
       [isAdmin]="isAdmin()"
+      [showProfile]="false"
     ></app-sidebar>
 
     <div class="dashboard-main" [class.sidebar-collapsed]="sidebarCollapsed">
@@ -32,11 +32,6 @@
             <ion-button class="notification-btn" (click)="openNotifications()">
               <ion-icon name="notifications-outline"></ion-icon>
               <ion-badge color="danger" *ngIf="notificationCount > 0">{{notificationCount}}</ion-badge>
-            </ion-button>
-            <ion-button class="profile-btn" (click)="openProfile()">
-              <ion-avatar class="header-avatar">
-                <img [src]="user.avatar_url" [alt]="user.full_name">
-              </ion-avatar>
             </ion-button>
           </ion-buttons>
         </ion-toolbar>

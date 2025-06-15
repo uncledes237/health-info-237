@@ -60,10 +60,7 @@ import { AuthService } from '../../../core/services/auth.service';
               </div>
 
               <div class="ion-padding-top ion-text-center">
-                <ion-text color="medium">Don't have an account?</ion-text>
-                <ion-button fill="clear" routerLink="/signup">
-                  Sign Up
-                </ion-button>
+                <ion-text color="medium">If you don't have an account, please contact relevant authorities to get an account created for you as an admin or health official.</ion-text>
               </div>
 
               <div *ngIf="errorMessage" class="ion-padding-top ion-text-center">

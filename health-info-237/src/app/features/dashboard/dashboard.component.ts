@@ -5,7 +5,6 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { AuthService, UserProfile } from '../../core/services/auth.service';
 import { NotificationService, Notification } from '../../core/services/notification.service';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
-import { ProfileModalComponent } from '../../shared/profile-modal/profile-modal.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,19 +14,7 @@ import { ProfileModalComponent } from '../../shared/profile-modal/profile-modal.
   imports: [CommonModule, RouterModule, IonicModule, SidebarComponent]
 })
 export class DashboardComponent implements OnInit {
-  user: UserProfile = {
-    id: '1',
-    email: 'john.doe@example.com',
-    role: 'Health Official',
-    full_name: 'John Doe',
-    avatar_url: 'assets/default-avatar.png',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    phone: '+1234567890',
-    location: 'New York',
-    status: 'active',
-    last_login: new Date().toISOString()
-  };
+  user: UserProfile | null = null; // User can be null for public access
   sidebarCollapsed = false;
   sidebarMobileOpen = false;
   isMobile = false;
@@ -41,8 +28,7 @@ export class DashboardComponent implements OnInit {
     { label: 'Safety Measures', icon: 'shield-checkmark-outline', route: '/dashboard/safety-measures' },
     { label: 'Report A Case', icon: 'alert-circle-outline', route: '/dashboard/report-case' },
     { label: 'Notifications', icon: 'notifications-outline', route: '/dashboard/notifications', badge: 0 },
-    { label: 'User Management', icon: 'people-outline', route: '/dashboard/admin/user-management', adminOnly: true },
-    { label: 'Logout', icon: 'log-out-outline', route: '/logout' }
+    { label: 'Login as Health Official', icon: 'log-in-outline', route: '/login' }
   ];
 
   constructor(
@@ -58,9 +44,7 @@ export class DashboardComponent implements OnInit {
     
     // Subscribe to user updates
     this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.user = user;
-      }
+      this.user = user; // Set user to null if not logged in
     });
 
     // Subscribe to notification updates
@@ -106,25 +90,12 @@ export class DashboardComponent implements OnInit {
     this.sidebarMobileOpen = false;
   }
 
-  async openProfile() {
-    const modal = await this.modalCtrl.create({
-      component: ProfileModalComponent,
-      componentProps: { user: this.user }
-    });
-    await modal.present();
+  async loginAsHealthOfficial() {
+    await this.router.navigate(['/login']);
   }
 
   async openNotifications() {
     await this.router.navigate(['/dashboard/notifications']);
-  }
-
-  async logout() {
-    try {
-      await this.authService.signOut();
-      await this.router.navigate(['/login']);
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
   }
 
   isAdmin(): boolean {

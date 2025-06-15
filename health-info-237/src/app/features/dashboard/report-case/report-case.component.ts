@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
 import { SupabaseService } from '../../../core/services/supabase.service';
 
 @Component({
@@ -43,6 +42,9 @@ import { SupabaseService } from '../../../core/services/supabase.service';
                 <ion-note slot="error" *ngIf="form.get('title')?.errors?.['required'] && form.get('title')?.touched">
                   Title is required
                 </ion-note>
+                <ion-note slot="error" *ngIf="form.get('title')?.errors?.['minlength'] && form.get('title')?.touched">
+                  Title must be at least 5 characters
+                </ion-note>
               </ion-item>
 
               <ion-item>
@@ -55,6 +57,9 @@ import { SupabaseService } from '../../../core/services/supabase.service';
                 <ion-note slot="error" *ngIf="form.get('description')?.errors?.['required'] && form.get('description')?.touched">
                   Description is required
                 </ion-note>
+                <ion-note slot="error" *ngIf="form.get('description')?.errors?.['minlength'] && form.get('description')?.touched">
+                  Description must be at least 20 characters
+                </ion-note>
               </ion-item>
 
               <!-- Location Information -->
@@ -64,7 +69,7 @@ import { SupabaseService } from '../../../core/services/supabase.service';
 
               <ion-item>
                 <ion-label position="floating">Region</ion-label>
-                <ion-input type="text" formControlName="region" placeholder="South West"></ion-input>
+                <ion-input type="text" formControlName="region" placeholder="Enter your region"></ion-input>
                 <ion-note slot="error" *ngIf="form.get('region')?.errors?.['required'] && form.get('region')?.touched">
                   Region is required
                 </ion-note>
@@ -72,7 +77,7 @@ import { SupabaseService } from '../../../core/services/supabase.service';
 
               <ion-item>
                 <ion-label position="floating">City/Town</ion-label>
-                <ion-input type="text" formControlName="city" placeholder="City or Town"></ion-input>
+                <ion-input type="text" formControlName="city" placeholder="Enter your city or town"></ion-input>
                 <ion-note slot="error" *ngIf="form.get('city')?.errors?.['required'] && form.get('city')?.touched">
                   City/Town is required
                 </ion-note>
@@ -93,10 +98,24 @@ import { SupabaseService } from '../../../core/services/supabase.service';
               </ion-item-divider>
 
               <ion-item>
+                <ion-label position="floating">Your Name</ion-label>
+                <ion-input type="text" formControlName="reporterName" placeholder="Enter your full name"></ion-input>
+                <ion-note slot="error" *ngIf="form.get('reporterName')?.errors?.['required'] && form.get('reporterName')?.touched">
+                  Your name is required
+                </ion-note>
+                <ion-note slot="error" *ngIf="form.get('reporterName')?.errors?.['minlength'] && form.get('reporterName')?.touched">
+                  Name must be at least 3 characters
+                </ion-note>
+              </ion-item>
+
+              <ion-item>
                 <ion-label position="floating">Phone Number</ion-label>
-                <ion-input type="tel" formControlName="phone" placeholder="Your contact number"></ion-input>
+                <ion-input type="tel" formControlName="phone" placeholder="Enter your contact number"></ion-input>
                 <ion-note slot="error" *ngIf="form.get('phone')?.errors?.['required'] && form.get('phone')?.touched">
                   Phone number is required
+                </ion-note>
+                <ion-note slot="error" *ngIf="form.get('phone')?.errors?.['pattern'] && form.get('phone')?.touched">
+                  Please enter a valid phone number
                 </ion-note>
               </ion-item>
 
@@ -183,7 +202,6 @@ export class ReportCaseComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
     private supabaseService: SupabaseService,
     private toastCtrl: ToastController
   ) {
@@ -194,6 +212,7 @@ export class ReportCaseComponent implements OnInit {
       region: ['', Validators.required],
       city: ['', Validators.required],
       locationDetails: [''],
+      reporterName: ['', [Validators.required, Validators.minLength(3)]],
       phone: ['', [Validators.required, Validators.pattern('^[+]?[0-9]{8,15}$')]],
       additionalContact: ['']
     });
@@ -218,27 +237,20 @@ export class ReportCaseComponent implements OnInit {
     }
 
     try {
-      const currentUser = await this.authService.getCurrentUser();
-      if (!currentUser) {
-        this.errorMessage = 'User not logged in.';
-        await this.presentToast(this.errorMessage, 'danger');
-        console.error('ReportCaseComponent: User not logged in when trying to submit case.');
-        this.isSubmitting = false;
-        return;
-      }
-
       const formData = this.form.value;
       const caseReport = {
-        user_id: currentUser.id,
         disease_type: formData.caseType,
         title: formData.title,
         symptoms: formData.description,
-        location: `${formData.region}, ${formData.city}${formData.locationDetails ? ', ' + formData.locationDetails : ''}`,
+        region: formData.region,
+        city: formData.city,
+        location_details: formData.locationDetails,
         report_date: new Date().toISOString().split('T')[0],
         phone_number: formData.phone,
         additional_contact_info: formData.additionalContact,
         status: 'pending',
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        reporter_name: formData.reporterName
       };
 
       console.log('ReportCaseComponent: Attempting to insert case report:', caseReport);
@@ -250,7 +262,7 @@ export class ReportCaseComponent implements OnInit {
         await this.presentToast(this.errorMessage, 'danger');
       } else {
         console.log('ReportCaseComponent: Case reported successfully:', data);
-        this.successMessage = 'Case reported successfully!';
+        this.successMessage = 'Case reported successfully! Our team will review your report and take appropriate action.';
         await this.presentToast(this.successMessage, 'success');
         this.form.reset();
         // Reset validation states

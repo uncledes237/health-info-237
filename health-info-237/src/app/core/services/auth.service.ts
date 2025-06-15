@@ -62,9 +62,15 @@ export class AuthService {
       // Try to get the user profile with retries
       let retryCount = 0;
       const maxRetries = 3;
+      const baseDelay = 1000; // 1 second base delay
       
       while (retryCount < maxRetries) {
         try {
+          // Add a small delay before each attempt to avoid lock contention
+          if (retryCount > 0) {
+            await new Promise(resolve => setTimeout(resolve, baseDelay * Math.pow(2, retryCount)));
+          }
+
           const { data: profile } = await this.supabaseService.getUserProfile(currentSession.user.id);
           if (profile) {
             this.currentUserSubject.next(profile);
@@ -77,17 +83,24 @@ export class AuthService {
           if (error.name === 'NavigatorLockAcquireTimeoutError') {
             retryCount++;
             if (retryCount < maxRetries) {
-              // Exponential backoff
-              await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+              console.log(`Retrying profile load in ${baseDelay * Math.pow(2, retryCount)}ms...`);
               continue;
             }
           }
           
           // For other errors or if we've exhausted retries
+          console.error('Failed to load user profile after retries:', error);
           this.currentUserSubject.next(null);
           await this.supabaseService.signOut();
           break;
         }
+      }
+
+      // If we've exhausted all retries without success
+      if (retryCount >= maxRetries) {
+        console.error('Failed to load user profile after maximum retries');
+        this.currentUserSubject.next(null);
+        await this.supabaseService.signOut();
       }
     } catch (error: any) {
       console.error('Auth initialization error:', error);
@@ -98,6 +111,7 @@ export class AuthService {
           error.message?.includes('storage') || 
           error.message?.includes('lock')) {
         try {
+          console.log('Attempting to clear auth state due to lock error...');
           await this.supabaseService.signOut();
         } catch (signOutError) {
           console.error('Error during cleanup signout:', signOutError);
