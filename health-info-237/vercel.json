@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "dist/health-info-237",
-        "buildCommand": "npm run vercel-build"
+        "buildCommand": "rm -rf node_modules package-lock.json && npm install --legacy-peer-deps && npm run build"
       }
     }
   ],
